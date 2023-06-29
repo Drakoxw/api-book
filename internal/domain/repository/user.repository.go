@@ -30,7 +30,7 @@ func (ur *UserRepository) FindAllUsers() ([]models.User, error) {
 
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.Username, &user.Password, &user.Email, &user.CreatedAt, &user.UpdatedAt)
+		err := rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email, &user.CreatedAt)
 		if err != nil {
 			log.Printf("Error al escanear los resultados: %v", err)
 			continue
