@@ -1,68 +1,80 @@
 package repository
 
-// import (
-// 	"api-book/internal/domain/models"
-// 	"database/sql"
-// 	"log"
-// )
+import (
+	"database/sql"
+	"log"
 
-// type UserRepository interface {
-// 	FindAllUsers() ([]models.User, error)
-// 	Save(user *models.User) error
-// 	Update(user *models.User) error
-// 	Delete(user *models.User) error
-// }
+	"api-book/internal/domain/models"
+)
 
-// type UserRepositoryImpl struct {
-// 	db *sql.DB
-// }
+type UserRepository struct {
+	db *sql.DB
+}
 
-// func NewUserRepository(db *sql.DB) UserRepository {
-// 	return &UserRepositoryImpl{
-// 		db: db,
-// 	}
-// }
+func NewUserRepository(db *sql.DB) *UserRepository {
+	return &UserRepository{
+		db: db,
+	}
+}
 
-// func (ur *UserRepositoryImpl) FindAllUsers() ([]models.User, error) {
-// 	query := "SELECT id, username, password, email, created_at, updated_at FROM users"
+func (ur *UserRepository) FindAllUsers() ([]models.User, error) {
+	query := "SELECT id, username, password, email, created_at FROM users"
 
-// 	rows, err := ur.db.Query(query)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer rows.Close()
+	rows, err := ur.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-// 	var users []models.User
+	var users []models.User
 
-// 	for rows.Next() {
-// 		var user models.User
-// 		err := rows.Scan(&user.Username, &user.Password, &user.Email, &user.CreatedAt, &user.UpdatedAt)
-// 		if err != nil {
-// 			log.Printf("Error al escanear los resultados: %v", err)
-// 			continue
-// 		}
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.Username, &user.Password, &user.Email, &user.CreatedAt, &user.UpdatedAt)
+		if err != nil {
+			log.Printf("Error al escanear los resultados: %v", err)
+			continue
+		}
 
-// 		users = append(users, user)
-// 	}
+		users = append(users, user)
+	}
 
-// 	if err := rows.Err(); err != nil {
-// 		return nil, err
-// 	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-// 	return users, nil
-// }
+	return users, nil
+}
 
-// func (repo *UserRepositoryImpl) Save(user *models.User) error {
-// 	// Implementación para guardar un usuario en la capa de persistencia
-// 	return nil
-// }
+func (ur *UserRepository) CreateUser(user *models.User) error {
+	query := "INSERT INTO users (username, password, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"
 
-// func (repo *UserRepositoryImpl) Update(user *models.User) error {
-// 	// Implementación para actualizar un usuario en la capa de persistencia
-// 	return nil
-// }
+	_, err := ur.db.Exec(query, user.Username, user.Password, user.Email, user.CreatedAt, user.UpdatedAt)
+	if err != nil {
+		return err
+	}
 
-// func (repo *UserRepositoryImpl) Delete(user *models.User) error {
-// 	// Implementación para eliminar un usuario en la capa de persistencia
-// 	return nil
-// }
+	return nil
+}
+
+func (ur *UserRepository) UpdateUser(user *models.User) error {
+	query := "UPDATE users SET password = $1, email = $2, updated_at = $3 WHERE username = $4"
+
+	_, err := ur.db.Exec(query, user.Password, user.Email, user.UpdatedAt, user.Username)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ur *UserRepository) DeleteUser(username string) error {
+	query := "DELETE FROM users WHERE username = $1"
+
+	_, err := ur.db.Exec(query, username)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
