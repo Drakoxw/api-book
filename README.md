@@ -11,7 +11,12 @@
     docker build -t api-book:latest .
 ```
 
+#### Build Image Docker
+```sh
+    docker run -d -p 3300:3000 --name api-book-app api-book
+```
+
 ## AWS make lambda
 ```sh
-    GOOS=linux GOARCH=amd64 go build -o aws/listuser
+    GOOS=linux GOARCH=amd64 go build -o main
 ```

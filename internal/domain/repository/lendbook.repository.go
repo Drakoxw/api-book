@@ -62,9 +62,9 @@ func (lbr *LendBookRepository) ReturnBookToLibrary(bookId int) error {
 /** handler.ListLendBooks */
 func (lbr *LendBookRepository) GetAllBooksAndLends() ([]models.Book, error) {
 	query := `
-		SELECT b.id, b.title, b.author, b.literary_genre, lb.id, lb.user_id, lb.return_book, lb.created_at, lb.updated_at
+		SELECT b.id, b.title, b.author, b.literary_genre, lb.id, lb.user_id, lb.return_book
 		FROM books b
-		LEFT JOIN lend_books lb ON b.id = lb.book_id
+		JOIN lend_books lb ON b.id = lb.book_id
 		ORDER BY b.id ASC, lb.created_at ASC
 	`
 
@@ -87,8 +87,8 @@ func (lbr *LendBookRepository) GetAllBooksAndLends() ([]models.Book, error) {
 			lendBookID     sql.NullInt64
 			userID         sql.NullInt64
 			returnBookTime sql.NullTime
-			createdAt      time.Time
-			updatedAt      time.Time
+			// createdAt      sql.NullTime
+			// updatedAt time.Time
 		)
 
 		err := rows.Scan(
@@ -99,8 +99,8 @@ func (lbr *LendBookRepository) GetAllBooksAndLends() ([]models.Book, error) {
 			&lendBookID,
 			&userID,
 			&returnBookTime,
-			&createdAt,
-			&updatedAt,
+			// &createdAt,
+			// &updatedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("error al escanear los resultados: %v", err)
@@ -112,8 +112,8 @@ func (lbr *LendBookRepository) GetAllBooksAndLends() ([]models.Book, error) {
 				UserId:     userID.Int64,
 				BookId:     bookID,
 				ReturnBook: returnBookTime,
-				CreatedAt:  createdAt,
-				UpdatedAt:  updatedAt,
+				// CreatedAt:  createdAt,
+				// UpdatedAt: updatedAt,
 			}
 		} else {
 			lendBook = nil
@@ -147,7 +147,7 @@ func (lbr *LendBookRepository) GetAllUsersAndLends() ([]models.User, error) {
 	query := `
 		SELECT u.id, u.username, u.email, lb.id, lb.book_id, lb.return_book, lb.created_at, lb.updated_at
 		FROM users u
-		LEFT JOIN lend_books lb ON u.id = lb.user_id
+		JOIN lend_books lb ON u.id = lb.user_id
 		ORDER BY u.id ASC, lb.created_at ASC
 	`
 

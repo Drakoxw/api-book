@@ -72,8 +72,9 @@ func (h *BookHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+	page, limit := utils.GetPaginatorSql(r.Header)
 
-	books, err := h.BookRepo.ListBooks()
+	books, err := h.BookRepo.ListBooks(page, limit)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error al listar libros : %v", err), http.StatusInternalServerError)
 		return

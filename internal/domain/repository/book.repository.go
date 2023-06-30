@@ -45,13 +45,15 @@ func (br *BookRepository) GetBookByID(id int) (*models.Book, error) {
 	return &book, nil
 }
 
-func (br *BookRepository) ListBooks() ([]models.Book, error) {
+func (br *BookRepository) ListBooks(page int, limit int) ([]models.Book, error) {
 	query := `
 		SELECT id, title, author, literary_genre, created_at
-		FROM books
+		FROM books 
+		ORDER BY id
+		LIMIT $1 OFFSET $2
 	`
 
-	rows, err := br.db.Query(query)
+	rows, err := br.db.Query(query, limit, page)
 	if err != nil {
 		return nil, fmt.Errorf("error al obtener la lista de libros: %v", err)
 	}

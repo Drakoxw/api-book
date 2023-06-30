@@ -10,15 +10,17 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
-func HandleListUser(ctx context.Context, ev events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func HandleListBooks(ctx context.Context, ev events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	res := utils.CreateAwsResponse()
 	db := pkg.StartDB()
 	defer db.Close()
 
-	userRepo := repository.NewUserRepository(db)
-	users, _ := userRepo.FindAllUsers()
+	page, limit := utils.GetPaginatorAwsSql(ev.Headers)
 
-	resData, err := utils.CreateResponseApi(users)
+	bookRepo := repository.NewBookRepository(db)
+	books, _ := bookRepo.ListBooks(page, limit)
+
+	resData, err := utils.CreateResponseApi(books)
 	if err != nil {
 		res.Body = err.Error()
 		res.StatusCode = http.StatusUnprocessableEntity

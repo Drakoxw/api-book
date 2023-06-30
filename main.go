@@ -49,8 +49,12 @@ func startServer() {
 func compileListUser() {
 	lambda.Start(aws.HandleListUser)
 }
+func compileListBooks() {
+	lambda.Start(aws.HandleListBooks)
+}
 
 func main() {
+	// compileListBooks()
 	// compileListUser()
 	startServer()
 }
