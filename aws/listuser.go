@@ -2,6 +2,7 @@ package aws
 
 import (
 	"api-book/internal/domain/dtos"
+	"api-book/internal/domain/repository"
 	"api-book/internal/infrastructure/pkg"
 	"api-book/internal/infrastructure/utils"
 	"context"
@@ -16,13 +17,13 @@ func HandleListUser(ctx context.Context, ev events.APIGatewayProxyRequest) (even
 	db := pkg.StartDB()
 	defer db.Close()
 
-	// userRepo := repository.NewUserRepository(db)
-	// users, _ := userRepo.FindAllUsers()
+	userRepo := repository.NewUserRepository(db)
+	users, _ := userRepo.FindAllUsers()
 
 	data := dtos.ResponseDTO{
 		Status:  "success",
 		Message: "data found",
-		Data:    "",
+		Data:    users,
 	}
 
 	resData, err := json.Marshal(data)

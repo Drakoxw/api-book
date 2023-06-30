@@ -1,6 +1,11 @@
 package utils
 
-import "github.com/aws/aws-lambda-go/events"
+import (
+	"api-book/internal/domain/dtos"
+	"encoding/json"
+
+	"github.com/aws/aws-lambda-go/events"
+)
 
 func CreateAwsResponse() events.APIGatewayProxyResponse {
 	res := events.APIGatewayProxyResponse{
@@ -12,4 +17,14 @@ func CreateAwsResponse() events.APIGatewayProxyResponse {
 	}
 
 	return res
+}
+
+func CreateResponseApi(data interface{}) ([]byte, error) {
+	responseDto := dtos.ResponseDTO{
+		Status:  "success",
+		Message: "data found",
+		Data:    data,
+	}
+
+	return json.Marshal(responseDto)
 }

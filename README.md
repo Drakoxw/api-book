@@ -6,6 +6,10 @@
 ```sh
     go run main.go
 ```
+#### Build Image Docker
+```sh
+    docker build -t api-book:latest .
+```
 
 ## AWS make lambda
 ```sh
