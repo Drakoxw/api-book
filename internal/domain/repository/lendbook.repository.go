@@ -19,9 +19,9 @@ func NewLendBookRepository(db *sql.DB) *LendBookRepository {
 
 /** handler.CreateLendBook */
 func (lbr *LendBookRepository) CreateLendBook(lendBook *models.LendBook) error {
-	query := "INSERT INTO lend_books (user_id, book_id, return_book, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"
+	query := "INSERT INTO lend_books (user_id, book_id, created_at) VALUES ($1, $2, $3)"
 
-	_, err := lbr.db.Exec(query, lendBook.UserId, lendBook.BookId, lendBook.ReturnBook, time.Now(), time.Now())
+	_, err := lbr.db.Exec(query, lendBook.UserId, lendBook.BookId, time.Now())
 	if err != nil {
 		return fmt.Errorf("error al crear el préstamo de libro: %v", err)
 	}
@@ -111,7 +111,7 @@ func (lbr *LendBookRepository) GetAllBooksAndLends() ([]models.Book, error) {
 				Id:         lendBookID.Int64,
 				UserId:     userID.Int64,
 				BookId:     bookID,
-				ReturnBook: returnBookTime.Time,
+				ReturnBook: returnBookTime,
 				CreatedAt:  createdAt,
 				UpdatedAt:  updatedAt,
 			}
@@ -192,7 +192,7 @@ func (lbr *LendBookRepository) GetAllUsersAndLends() ([]models.User, error) {
 				Id:         lendBookID.Int64,
 				UserId:     userID,
 				BookId:     bookID.Int64,
-				ReturnBook: returnBookTime.Time,
+				ReturnBook: returnBookTime,
 				CreatedAt:  createdAt,
 				UpdatedAt:  updatedAt,
 			}

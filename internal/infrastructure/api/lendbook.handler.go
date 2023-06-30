@@ -72,7 +72,7 @@ func (h *LendBookHandler) ListLendBooks(w http.ResponseWriter, r *http.Request) 
 
 func (h *LendBookHandler) ReturnBookToLibrary(w http.ResponseWriter, r *http.Request) {
 
-	bookID := r.URL.Query().Get("book_id")
+	bookID := r.URL.Query().Get("lend_id")
 	if bookID == "" {
 		http.Error(w, "Se requiere el id", http.StatusBadRequest)
 		return
@@ -81,6 +81,12 @@ func (h *LendBookHandler) ReturnBookToLibrary(w http.ResponseWriter, r *http.Req
 	bookIDNum, err := strconv.Atoi(bookID)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error al obtener el id"), http.StatusBadRequest)
+		return
+	}
+
+	_, err = h.LendBookRepo.GetLendBookByID(bookIDNum)
+	if err != nil {
+		http.Error(w, fmt.Sprintln("No existe el Un prestamo con el id :", bookIDNum), http.StatusInternalServerError)
 		return
 	}
 
