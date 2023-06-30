@@ -1,21 +1,19 @@
 package pkg
 
 import (
-	"api-book/internal/infrastructure/utils"
 	"database/sql"
 	"fmt"
-	"os"
 
 	_ "github.com/lib/pq"
 )
 
 func InitPostgres() (*sql.DB, error) {
 
-	var POSTGRES_HOST = utils.GetEnvVariable("POSTGRES_HOST")
-	var POSTGRES_PORT = os.Getenv("POSTGRES_PORT")
-	var POSTGRES_USER = os.Getenv("POSTGRES_USER")
-	var POSTGRES_PASS = os.Getenv("POSTGRES_PASS")
-	var POSTGRES_DB = os.Getenv("POSTGRES_DB")
+	var POSTGRES_HOST = "drakodb.cfzubfvp2bzr.us-east-2.rds.amazonaws.com"
+	var POSTGRES_PORT = 5432
+	var POSTGRES_USER = "drakouser"
+	var POSTGRES_PASS = "RootPass12345$"
+	var POSTGRES_DB = "drakodb"
 
 	dns := fmt.Sprintf("postgres://%s:%s@%s:%v/%s", POSTGRES_USER, POSTGRES_PASS, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB)
 

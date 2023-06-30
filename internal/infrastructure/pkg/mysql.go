@@ -1,22 +1,20 @@
 package pkg
 
 import (
-	"api-book/internal/infrastructure/utils"
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func InitMysql() (*sql.DB, error) {
 
-	var MYSQL_HOST = utils.GetEnvVariable("MYSQL_HOST")
-	var MYSQL_USER = os.Getenv("MYSQL_USER")
+	var MYSQL_HOST = "cifrado.com.co"
+	var MYSQL_USER = "cifrados_drako"
 	var MYSQL_PASS = "Desarrollo$123"
-	var MYSQL_PORT = os.Getenv("MYSQL_PORT")
-	var MYSQL_DB = os.Getenv("MYSQL_DB")
+	var MYSQL_PORT = 3306
+	var MYSQL_DB = "cifrados_dev"
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%v)/%s", MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_PORT, MYSQL_DB)
 	log.Println(dsn)
