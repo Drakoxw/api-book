@@ -133,8 +133,8 @@ func (ur *UserRepository) GetUsersHistory() ([]*models.UserHistory, error) {
 			&username,
 			&email,
 			&lendId,
-			&bookId,
 			&userId,
+			&bookId,
 			&returnBook,
 			&lendCreated,
 			&lendUpdated,
@@ -143,14 +143,26 @@ func (ur *UserRepository) GetUsersHistory() ([]*models.UserHistory, error) {
 			return nil, err
 		}
 
-		user := &models.UserHistory{
-			Id:          id,
-			Email:       email,
-			Username:    username,
-			LendHistory: []*models.LendBook{},
+		user, ok := usersMap[id]
+		if !ok {
+			user = &models.UserHistory{
+				Id:          id,
+				Email:       email,
+				Username:    username,
+				LendHistory: []*models.LendBook{},
+			}
+			usersMap[id] = user
 		}
 
-		usersMap[id] = user
+		lend := &models.LendBook{
+			Id:         lendId,
+			UserId:     userId,
+			BookId:     bookId,
+			ReturnBook: returnBook,
+			CreatedAt:  lendCreated,
+			UpdatedAt:  lendUpdated,
+		}
+		user.LendHistory = append(user.LendHistory, lend)
 
 	}
 	users := make([]*models.UserHistory, 0, len(usersMap))

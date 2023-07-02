@@ -164,8 +164,6 @@ func (br *BookRepository) GetBooksHistory() ([]*models.Book, error) {
 		}
 	}
 
-	// utils.LogInfoData("dataMap", "mapa de datos", bookMap)
-
 	books := make([]*models.Book, 0, len(bookMap))
 	for _, book := range bookMap {
 		books = append(books, book)

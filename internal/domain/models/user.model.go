@@ -6,7 +6,7 @@ type UserHistory struct {
 	Id          int64       `json:"id"`
 	Username    string      `json:"username"`
 	Email       string      `json:"email"`
-	LendHistory []*LendBook `json:"LendHistory,omitempty"`
+	LendHistory []*LendBook `json:"lendHistory,omitempty"`
 }
 type User struct {
 	Id          int64       `json:"id,omitempty"`
@@ -15,7 +15,7 @@ type User struct {
 	Email       string      `json:"email"`
 	CreatedAt   time.Time   `json:"create_at,omitempty"`
 	UpdatedAt   time.Time   `json:"updated_at,omitempty"`
-	LendHistory []*LendBook `json:"LendHistory,omitempty"`
+	LendHistory []*LendBook `json:"lendHistory,omitempty"`
 }
 
 type UpdateUser struct {
