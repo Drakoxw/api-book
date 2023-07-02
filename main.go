@@ -7,7 +7,6 @@ import (
 	"api-book/internal/infrastructure/pkg"
 	"api-book/internal/infrastructure/utils"
 	"fmt"
-
 	"log"
 	"net/http"
 
@@ -43,6 +42,7 @@ func startServer() {
 	http.HandleFunc("/return_book", lendHandler.ReturnBookToLibrary)
 
 	fmt.Println("Run on port", port)
+	utils.LogInfo("tmp/main.log", fmt.Sprintf("Server start %s", port))
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 

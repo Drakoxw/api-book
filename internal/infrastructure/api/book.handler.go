@@ -22,6 +22,7 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	var book models.Book
 	err := json.NewDecoder(r.Body).Decode(&book)
+	utils.LogInfoData("newBook.log", "CreateBook", book)
 	if err != nil {
 		http.Error(w, "Error procesar los datos", http.StatusBadRequest)
 		return
