@@ -28,3 +28,13 @@ func CreateResponseApi(data interface{}) ([]byte, error) {
 
 	return json.Marshal(responseDto)
 }
+
+func BadResponse(message string) string {
+	badResponseDto := dtos.ResponseDTO{
+		Status:  "error",
+		Message: message,
+	}
+
+	jsonBytes, _ := json.Marshal(badResponseDto)
+	return string(jsonBytes)
+}

@@ -2,6 +2,12 @@ package models
 
 import "time"
 
+type UserHistory struct {
+	Id          int64       `json:"id"`
+	Username    string      `json:"username"`
+	Email       string      `json:"email"`
+	LendHistory []*LendBook `json:"LendHistory,omitempty"`
+}
 type User struct {
 	Id          int64       `json:"id,omitempty"`
 	Username    string      `json:"username"`

@@ -36,13 +36,12 @@ func startServer() {
 	http.HandleFunc("/new_book", bookHandler.CreateBook)
 
 	http.HandleFunc("/new_book_loan", lendHandler.CreateLendBook)
-	http.HandleFunc("/lent_book", lendHandler.GetLendBook)
-	http.HandleFunc("/lent_books", lendHandler.ListLendBooks)
-	http.HandleFunc("/users_with_loans", lendHandler.GetAllUsersAndLends)
 	http.HandleFunc("/return_book", lendHandler.ReturnBookToLibrary)
 
-	fmt.Println("Run on port", port)
-	utils.LogInfo("tmp/main.log", fmt.Sprintf("Server start %s", port))
+	http.HandleFunc("/history_books", bookHandler.GetHistoryLendBook)
+	http.HandleFunc("/history_users", userHandler.GetHistoryLendUsers)
+
+	utils.LogInfo("main.log", fmt.Sprintf("Server start %s", port))
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
@@ -54,7 +53,7 @@ func compileListBooks() {
 }
 
 func main() {
-	compileListBooks()
+	// compileListBooks()
 	// compileListUser()
-	// startServer()
+	startServer()
 }

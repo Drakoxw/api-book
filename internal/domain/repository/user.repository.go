@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"time"
 
 	"api-book/internal/domain/models"
 )
@@ -95,4 +96,67 @@ func (ur *UserRepository) DeleteUser(username string) error {
 	}
 
 	return nil
+}
+
+func (ur *UserRepository) GetUsersHistory() ([]*models.UserHistory, error) {
+	query := `
+		SELECT 
+			u.id, 
+			u.username, 
+			u.email,
+			l.id AS lend_id, 
+			l.user_id, 
+			l.book_id, 
+			l.return_book, 
+			l.created_at AS lend_created_at, 
+			l.updated_at
+		FROM users AS u
+		JOIN lend_books AS l ON u.id = l.user_id
+		ORDER BY u.id DESC
+	`
+	rows, err := ur.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	usersMap := make(map[int64]*models.UserHistory)
+
+	for rows.Next() {
+		var id, lendId, bookId, userId int64
+		var username, email string
+		var returnBook sql.NullTime
+		var lendCreated, lendUpdated time.Time
+
+		err := rows.Scan(
+			&id,
+			&username,
+			&email,
+			&lendId,
+			&bookId,
+			&userId,
+			&returnBook,
+			&lendCreated,
+			&lendUpdated,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		user := &models.UserHistory{
+			Id:          id,
+			Email:       email,
+			Username:    username,
+			LendHistory: []*models.LendBook{},
+		}
+
+		usersMap[id] = user
+
+	}
+	users := make([]*models.UserHistory, 0, len(usersMap))
+	for _, user := range usersMap {
+		users = append(users, user)
+	}
+
+	return users, nil
 }

@@ -84,3 +84,92 @@ func (br *BookRepository) ListBooks(page int, limit int) ([]models.Book, error) 
 
 	return books, nil
 }
+
+func (br *BookRepository) GetBooksHistory() ([]*models.Book, error) {
+
+	query := `
+		SELECT 
+			b.id, 
+			b.title, 
+			b.author, 
+			b.literary_genre, 
+			b.created_at,
+			l.id AS lend_id, 
+			l.user_id, 
+			l.book_id, 
+			l.return_book, 
+			l.created_at AS lend_created_at, 
+			l.updated_at
+		FROM books AS b
+		JOIN lend_books AS l ON b.id = l.book_id
+		ORDER BY b.id DESC
+	`
+
+	rows, err := br.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	bookMap := make(map[int64]*models.Book)
+
+	for rows.Next() {
+		var bookID, lendID sql.NullInt64
+		var title, author, literaryGenre string
+		var createdAt time.Time
+		var lendCreatedAt, updatedAt, returnBook sql.NullTime
+		var userID, bookLendId int64
+
+		err := rows.Scan(
+			&bookID,
+			&title,
+			&author,
+			&literaryGenre,
+			&createdAt,
+			&lendID,
+			&userID,
+			&bookLendId,
+			&returnBook,
+			&lendCreatedAt,
+			&updatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		// Verificar si el libro ya existe en el mapa, de lo contrario, crearlo
+		book, ok := bookMap[bookLendId]
+		if !ok {
+			book = &models.Book{
+				Id:            bookLendId,
+				Title:         title,
+				Author:        author,
+				LiteraryGenre: literaryGenre,
+				CreatedAt:     createdAt,
+				LendHistory:   []*models.LendBook{},
+			}
+			bookMap[bookLendId] = book
+		}
+
+		// Si hay información de préstamo, agregarla al historial de préstamos del libro
+		if lendID.Valid {
+			lend := &models.LendBook{
+				Id:         lendID.Int64,
+				UserId:     userID,
+				BookId:     bookLendId,
+				ReturnBook: returnBook,
+				CreatedAt:  lendCreatedAt.Time,
+				UpdatedAt:  updatedAt.Time,
+			}
+			book.LendHistory = append(book.LendHistory, lend)
+		}
+	}
+
+	// utils.LogInfoData("dataMap", "mapa de datos", bookMap)
+
+	books := make([]*models.Book, 0, len(bookMap))
+	for _, book := range bookMap {
+		books = append(books, book)
+	}
+
+	return books, nil
+}

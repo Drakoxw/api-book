@@ -8,7 +8,7 @@ type Book struct {
 	Author        string      `json:"author"`
 	LiteraryGenre string      `json:"literary_genre"`
 	CreatedAt     time.Time   `json:"created_at,omitempty"`
-	LendHistory   []*LendBook `json:"LendHistory,omitempty"`
+	LendHistory   []*LendBook `json:"lendHistory,omitempty"`
 }
 
 var CreateDataBook = `
