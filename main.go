@@ -54,7 +54,7 @@ func compileListBooks() {
 }
 
 func main() {
-	// compileListBooks()
+	compileListBooks()
 	// compileListUser()
-	startServer()
+	// startServer()
 }

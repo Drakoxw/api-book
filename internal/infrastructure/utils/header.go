@@ -37,7 +37,7 @@ func GetPaginatorAwsSql(h map[string]string) (int, int) {
 		}
 	}
 
-	if p, ok := h["Page"]; ok {
+	if p, ok := h["page"]; ok {
 		P, err := strconv.Atoi(p)
 		if err == nil {
 			page = (P - 1) * limit
