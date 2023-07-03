@@ -2,7 +2,9 @@ package repository
 
 import (
 	"api-book/internal/domain/models"
+	"api-book/internal/infrastructure/utils"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -167,6 +169,74 @@ func (br *BookRepository) GetBooksHistory() ([]*models.Book, error) {
 	books := make([]*models.Book, 0, len(bookMap))
 	for _, book := range bookMap {
 		books = append(books, book)
+	}
+
+	return books, nil
+}
+
+func (br *BookRepository) GetBooksHistoryV2() ([]models.BookV2, error) {
+
+	query := `
+	SELECT 
+    b.id, 
+    b.title, 
+    b.author, 
+    b.literary_genre, 
+    b.created_at,
+		(
+			SELECT json_agg(json_build_object(
+				'id', l.id,
+				'user_id', l.user_id,
+				'book_id', l.book_id,
+				'return_book', to_char(l.return_book,'YYYY-MM-DD"T"HH24:MI:SS".00000Z"'),
+				'created_at', to_char(l.created_at, 'YYYY-MM-DD"T"HH24:MI:SS".00000Z"'),
+				'updated_at', to_char(l.updated_at, 'YYYY-MM-DD"T"HH24:MI:SS".00000Z"')
+			))
+			FROM lend_books l
+			WHERE l.book_id = b.id
+		) AS lendH
+	FROM books b
+	ORDER BY b.id DESC
+	`
+
+	rows, err := br.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []models.BookV2
+
+	for rows.Next() {
+		var book models.BookV2
+		var lendString *string
+
+		err := rows.Scan(
+			&book.Id,
+			&book.Title,
+			&book.Author,
+			&book.LiteraryGenre,
+			&book.CreatedAt,
+			&lendString,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error al escanear los resultados: %v", err)
+		}
+		if lendString != nil {
+			var lendBooks []*models.LendBookStr
+			err = json.Unmarshal([]byte(*lendString), &lendBooks)
+			if err != nil {
+				utils.LogErrorData("errorMarshall", "errorMarshall", lendString)
+				return nil, err
+			}
+			book.LendHistory = lendBooks
+		}
+
+		books = append(books, book)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error al iterar por los resultados: %v", err)
 	}
 
 	return books, nil

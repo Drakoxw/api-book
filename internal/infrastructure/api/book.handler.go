@@ -15,6 +15,30 @@ type BookHandler struct {
 }
 
 /** LISTA EL HISTORIAL DE PRESTAMO DE LOS LIBROS */
+func (h *BookHandler) GetHistoryLendBookV2(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(
+			w,
+			utils.BadResponse("Method not allowed"),
+			http.StatusMethodNotAllowed,
+		)
+		return
+	}
+	books, err := h.BookRepo.GetBooksHistoryV2()
+	if err != nil {
+		http.Error(
+			w,
+			utils.BadResponse(err.Error()),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	jData, _ := utils.CreateResponseApi(books)
+	w.WriteHeader(http.StatusOK)
+	w.Write(jData)
+}
+
+/** LISTA EL HISTORIAL DE PRESTAMO DE LOS LIBROS */
 func (h *BookHandler) GetHistoryLendBook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(

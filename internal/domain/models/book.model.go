@@ -10,6 +10,14 @@ type Book struct {
 	CreatedAt     time.Time   `json:"created_at,omitempty"`
 	LendHistory   []*LendBook `json:"lendHistory,omitempty"`
 }
+type BookV2 struct {
+	Id            int64          `json:"id"`
+	Title         string         `json:"title"`
+	Author        string         `json:"author"`
+	LiteraryGenre string         `json:"literary_genre"`
+	CreatedAt     time.Time      `json:"created_at"`
+	LendHistory   []*LendBookStr `json:"lendHistory,omitempty"`
+}
 
 var CreateDataBook = `
 INSERT INTO books (title, author, literary_genre, created_at)

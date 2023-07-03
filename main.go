@@ -26,20 +26,22 @@ func startServer() {
 	bookHandler := &api.BookHandler{BookRepo: bookRepo}
 	lendHandler := &api.LendBookHandler{LendBookRepo: lendRepo}
 
-	http.HandleFunc("/user", userHandler.GetUserId)
-	http.HandleFunc("/users", userHandler.GetAllUsers)
-	http.HandleFunc("/new_user", userHandler.CreateUser)
-	http.HandleFunc("/update_user", userHandler.UpdateUser)
+	http.HandleFunc("/v1/user", userHandler.GetUserId)
+	http.HandleFunc("/v1/users", userHandler.GetAllUsers)
+	http.HandleFunc("/v1/new_user", userHandler.CreateUser)
+	http.HandleFunc("/v1/update_user", userHandler.UpdateUser)
 
-	http.HandleFunc("/book", bookHandler.GetBook)
-	http.HandleFunc("/books", bookHandler.ListBooks)
-	http.HandleFunc("/new_book", bookHandler.CreateBook)
+	http.HandleFunc("/v1/book", bookHandler.GetBook)
+	http.HandleFunc("/v1/books", bookHandler.ListBooks)
+	http.HandleFunc("/v1/new_book", bookHandler.CreateBook)
 
-	http.HandleFunc("/new_book_loan", lendHandler.CreateLendBook)
-	http.HandleFunc("/return_book", lendHandler.ReturnBookToLibrary)
+	http.HandleFunc("/v1/new_book_loan", lendHandler.CreateLendBook)
+	http.HandleFunc("/v1/return_book", lendHandler.ReturnBookToLibrary)
 
-	http.HandleFunc("/history_books", bookHandler.GetHistoryLendBook)
-	http.HandleFunc("/history_users", userHandler.GetHistoryLendUsers)
+	http.HandleFunc("/v1/history_books", bookHandler.GetHistoryLendBook)
+	http.HandleFunc("/v2/history_books", bookHandler.GetHistoryLendBookV2)
+
+	http.HandleFunc("/v1/history_users", userHandler.GetHistoryLendUsers)
 
 	utils.LogInfo("main.log", fmt.Sprintf("Server start %s", port))
 	log.Fatal(http.ListenAndServe(port, nil))
