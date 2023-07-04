@@ -14,6 +14,7 @@ type saveData struct {
 	Data  interface{}
 }
 
+/** CONVIERTE A STRING LOS DATOS Y EL TITULO QUE SE DESEE GUARDAR */
 func structToString(title string, data interface{}) string {
 	save := saveData{Title: title, Data: data}
 	jsonBytes, _ := json.Marshal(save)
@@ -22,10 +23,10 @@ func structToString(title string, data interface{}) string {
 
 func analizePathFile(filePath string) string {
 	if !strings.Contains(filePath, "tmp/") {
-		filePath = fmt.Sprintf("%s %s", "tmp/", filePath)
+		filePath = fmt.Sprintf("%s%s", "tmp/", filePath)
 	}
 	if !strings.Contains(filePath, ".log") {
-		filePath = fmt.Sprintf("%s %s", filePath, ".log")
+		filePath = fmt.Sprintf("%s%s", filePath, ".log")
 	}
 	return filePath
 }
@@ -35,7 +36,7 @@ func logSave(filePath string, info string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	absFilePath = strings.Replace(absFilePath, "\\internal\\infrastructure\\utils", "", 1)
 	file, err := os.OpenFile(absFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return "", err
