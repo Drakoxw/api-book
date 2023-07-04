@@ -1,0 +1,82 @@
+/// ext: REST Client - Huachao Mao
+
+### LISTAR TODOS LOS USUARIOS
+GET /v1/users HTTP/1.1
+Host: localhost:3000
+Accept: application/json
+
+### LISTAR USUARIO POR ID
+GET /v1/user?id=1 HTTP/1.1
+Host: localhost:3000
+Accept: application/json
+
+### CREAR UN USUARIO
+POST /v1/new_user HTTP/1.1
+Content-Type: application/json
+Host: localhost:3000
+
+{
+	"username": "Usuario --",
+	"password": "password--",
+	"email": "user111@example.com"
+}
+
+### ACTUALIZA UN USUARIO
+PUT /v1/update_user?id=4 HTTP/1.1
+Content-Type: application/json
+Host: localhost:3000
+Content-Length: 52
+
+{
+	"username": "User n4",
+	"email": "user44@mail.com"
+}
+
+### LISTA EL HISTORIAL DE USUARIOS Y PRESTAMOS
+GET /v1/history_users HTTP/1.1
+Content-Type: application/json
+Host: localhost:3000
+
+### LISTA LOS LIBROS CON PAGINADOR
+GET /v1/books HTTP/1.1
+Page: 3
+Limit: 3
+Host: localhost:3000
+
+### TRAE UN LIBRO POR ID
+GET /v1/book?id=4 HTTP/1.1
+Host: localhost:3000
+
+### LISTA LOS LIBROS CON HISTORIAL DE PRESTAMOS
+GET /v1/history_books HTTP/1.1
+Host: localhost:3000
+
+### LISTA LOS LIBROS Y SU HISTORIAL CON UNA CONSULTA DISTINTA
+GET /v2/history_books HTTP/1.1
+Host: localhost:3000
+
+### CREAR UN NUEVO LIBRO
+POST /v1/new_book HTTP/1.1
+Content-Type: application/json
+Host: localhost:3000
+
+{
+	"title": "Book 25",
+	"author": "Author 7",
+	"literary_genre": "Horror"
+}
+
+### REGISTRA EL PRESTAMO DE UN NUEVO LIBRO
+POST /v1/new_book_loan HTTP/1.1
+Content-Type: application/json
+Host: localhost:3000
+
+{
+	"user_id": 1,
+	"book_id": 13
+}
+
+### REGISTRA EL RETORNO DEL LIBRO CON EL ID DEL PRESTAMO
+POST /v1/return_book?lend_id=1 HTTP/1.1
+Content-Type: application/json
+Host: localhost:3000
